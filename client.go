@@ -4,7 +4,6 @@ import(
 	"net"
 	"os"
 	"time"
-	"fmt"
 )
 
 func main() {
@@ -12,8 +11,6 @@ func main() {
 	checkErr(err)
 	limiter := time.Tick(time.Minute * 3)
 	for{
-		
-		fmt.Println("send------")
 		conn.Write([]byte("ack"))
 		<-limiter
 	}

@@ -4,7 +4,6 @@ import(
 	"net"
 	"os"
 	"strings"
-	"fmt"
 )
 
 func main() {
@@ -14,15 +13,29 @@ func main() {
 	checkErr(err)
 	defer listener.Close()
 	var buff =make([]byte,1024)
-	dstFile,err := os.Create(os.Args[2])
+	lastIp:=""
+	dstFile,err := os.Open(os.Args[2])
 	checkErr(err)
+	defer dstFile.Close()
+	n,_:=dstFile.Read(buff)
+	checkErr(err)
+	if n!=0 {
+		lastIp=string(buff[0:n])
+	}
 	for {
 		_,addr,err:=listener.ReadFromUDP(buff)
-		fmt.Println("------receive------from-------"+addr.String())
 		checkErr(err)
-		_,err=dstFile.Seek(0,0)
+
+		ip:=strings.Split(addr.String(),":")[0]
+		
+		if ip==lastIp {
+			continue
+		}
+		dstFile.Close()
+		dstFile,err:=os.Create(os.Args[2])
 		checkErr(err)
-		dstFile.WriteString(strings.Split(addr.String(),":")[0])
+		defer dstFile.Close()
+		dstFile.WriteString(ip)
 	}
 }
 
