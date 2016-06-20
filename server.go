@@ -4,6 +4,7 @@ import(
 	"net"
 	"os"
 	"strings"
+	"fmt"
 )
 
 func main() {
@@ -17,8 +18,10 @@ func main() {
 	checkErr(err)
 	for {
 		_,addr,err:=listener.ReadFromUDP(buff)
+		fmt.Println("------receive------from-------"+addr.String())
 		checkErr(err)
-		dstFile.Seek(0,0)
+		_,err=dstFile.Seek(0,0)
+		checkErr(err)
 		dstFile.WriteString(strings.Split(addr.String(),":")[0])
 	}
 }
