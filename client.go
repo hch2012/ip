@@ -12,9 +12,10 @@ func main() {
 	checkErr(err)
 	limiter := time.Tick(time.Minute * 3)
 	for{
-		<-limiter
+		
 		fmt.Println("send------")
 		conn.Write([]byte("ack"))
+		<-limiter
 	}
 }
 
